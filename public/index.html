@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short Link Generator</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Short Link Generator</h1>
+        <form id="shorten-form">
+            <input type="url" id="url-input" placeholder="Enter a URL" required>
+            <button type="submit">Generate Short Link</button>
+        </form>
+        <div id="result" class="hidden">
+            <p>Short Link:</p>
+            <a id="short-url" href="#" target="_blank"></a>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('shorten-form');
+        const input = document.getElementById('url-input');
+        const resultDiv = document.getElementById('result');
+        const shortUrlLink = document.getElementById('short-url');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ originalUrl: input.value })
+            });
+
+            const data = await response.json();
+
+            if (data.shortUrl) {
+                shortUrlLink.textContent = data.shortUrl;
+                shortUrlLink.href = data.shortUrl;
+                resultDiv.classList.remove('hidden');
+            } else {
+                alert('Failed to generate short link.');
+            }
+        });
+    </script>
+</body>
+</html>
